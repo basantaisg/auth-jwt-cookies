@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import bcrypt from 'bcryptjs';
@@ -26,19 +26,21 @@ export class AuthService {
     const user = await this.prismaService.user.findUnique({
       where: { email },
     });
-    if (!user) throw new Error('Invalid Credintials!');
+    if (!user) throw new UnauthorizedException('Invalid email!');
 
     const passwordMatches = await bcrypt.compare(password, user.password);
-    if (!passwordMatches) throw new Error('Invalid password!');
+    if (!passwordMatches) throw new UnauthorizedException('Invalid password!');
 
     // Generation of token starts here...
     const payload = { sub: user.id, email: user.email };
+    // access token!
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
       expiresIn: '15m',
     });
+    // refresh token!
     const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_TOKEN,
+      secret: process.env.JWT_REFRESH_SECRET, // ✅ match env name
       expiresIn: '7d',
     });
 
