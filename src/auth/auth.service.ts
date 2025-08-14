@@ -52,4 +52,13 @@ export class AuthService {
 
     return { accessToken };
   }
+
+  async refreshAccessToken(user: any, res: Response) {
+    const payload = { sub: user.userId, email: user.id };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_ACCESS_SECRET,
+      expiresIn: '15m',
+    });
+    return { accessToken };
+  }
 }
