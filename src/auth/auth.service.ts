@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   async refreshAccessToken(user: any, res: Response) {
-    const payload = { sub: user.userId, email: user.id };
+    const payload = { sub: user.userId, email: user.email };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
       expiresIn: '15m',
