@@ -5,7 +5,7 @@ import { LoginUserDto } from './dtos/login-user.dto';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
